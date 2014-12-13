@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.awt.Image;
 import java.io.*;
 import javax.imageio.*;
+import java.net.URL;
 public class ImageManager{
 
 	private static ArrayList<Image> imageList;
