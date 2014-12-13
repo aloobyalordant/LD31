@@ -13,15 +13,15 @@ public class ImageManager{
 	private static Image avatarImage;
 
 	public static void initialise(){
-//		try {
+		try {
 	
-//			floorTileImage = ImageIO.read(new File("Art/FloorTile.png"));
-//			wallImage = ImageIO.read(new File("Art/Wall.png"));
-//			guardImage = ImageIO.read(new File("Art/Guard2.gif"));
-//			alertGuardImage = ImageIO.read(new File("Art/Guard3.gif"));
-//			avatarImage = ImageIO.read(new File("Art/Explorer2(17x20).gif"));
-//		} catch (IOException e) {
-//		}
+			floorTileImage = ImageIO.read(new File("FloorTile.png"));
+			wallImage = ImageIO.read(new File("Wall.png"));
+			guardImage = ImageIO.read(new File("Guard2.gif"));
+			alertGuardImage = ImageIO.read(new File("Guard3.gif"));
+			avatarImage = ImageIO.read(new File("Explorer2(17x20).gif"));
+		} catch (IOException e) {
+		}
 
 	}
 
