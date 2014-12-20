@@ -7,7 +7,6 @@ import java.util.Scanner;
 import java.awt.Image;
 import java.io.*;
 import javax.imageio.*;
-import java.net.URL;
 
 public class Game extends Applet implements Runnable, KeyListener {
 
