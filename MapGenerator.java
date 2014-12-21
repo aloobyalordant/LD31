@@ -1,5 +1,6 @@
 // the class that generates maps
 import java.util.Random;
+import java.util.ArrayList;
 public class MapGenerator{
 
 	private static Random ran = new Random();
@@ -106,6 +107,30 @@ Here is a map of the edges these letters correspond to (true = the way is open, 
 		map[27][3] = 0;
 		map[3][15] = 0;
 		map[27][15] = 0;
+ 
+		// make sure the avatar doesn't have to go through too many walls to get to any particular charger
+		// (pick a random first charger to reduce distance to, to avoid bias in level structure)
+		int chargerX;
+		int chargerY;
+		int chargerChoice = ran.nextInt(4);
+		if(chargerChoice == 0){
+			chargerX = 3;
+			chargerY = 3;
+		} else if(chargerChoice == 1){
+			chargerX = 27;
+			chargerY = 3;
+		} else if(chargerChoice == 2){
+			chargerX = 3;
+			chargerY = 15;
+		} else {
+			chargerX = 27;
+			chargerY = 15;
+		}
+		// make sure avatar has wall distance 1 to any charger (hmmmm, might want to change this later...)
+		map = reduceWallDistance(map,15,9,chargerX,chargerY,1);
+		map = reduceWallDistance(map,15,9,30-chargerX,chargerY,1);
+		map = reduceWallDistance(map,15,9,chargerX,18-chargerY,1);
+		map = reduceWallDistance(map,15,9,30-chargerX,18-chargerY,1);
 
 /*
 		addSegment(map, 0,0,topLeftCornerSegment());
@@ -174,15 +199,60 @@ Here is a map of the edges these letters correspond to (true = the way is open, 
 
 		return tempMap;
 */
+
 		return map;
 	}
+
+
+	// remove blocks from the map until the wall distance From (x,y) To (a,b) is at most maxDistance
+	private static int[][] reduceWallDistance(int[][] mapData, int x, int y, int a, int b, int maxDistance){
+		double[][][][] wallDistance = Map.calculateWallDistance(mapData);
+		int currentBest = ((Double)wallDistance[x][y][a][b]).intValue();
+		int distanceToReduce = Math.max(0,(currentBest-maxDistance));
+		
+		for (int c = 0; c < distanceToReduce; c++){
+			int width = mapData.length;
+			int height = mapData[0].length; 
+			ArrayList<GridRef> deletionCandidates = new ArrayList<GridRef>();
+			for (int i = 1; i < width-1; i++){
+				for (int j = 1; j < height-1; j++){
+					if(mapData[i][j] == 1){
+						if(wallDistance[x][y][i-1][j] + wallDistance[i][j][a][b] < currentBest
+							|| wallDistance[x][y][i][j-1] + wallDistance[i][j][a][b] < currentBest
+							|| wallDistance[x][y][i+1][j] + wallDistance[i][j][a][b] < currentBest
+							|| wallDistance[x][y][i][j+1] + wallDistance[i][j][a][b] < currentBest){
+							deletionCandidates.add(new GridRef(i,j));
+						}
+					}
+				}
+			}
+			
+			int numberCandidates = deletionCandidates.size();
+			if(numberCandidates > 0){
+				int choice = ran.nextInt(numberCandidates);
+				GridRef chosenGR = deletionCandidates.get(choice);
+				mapData[chosenGR.x][chosenGR.y] = 0;
+ 				wallDistance = Map.calculateWallDistance(mapData);
+			}
+			currentBest--;
+		}
+		return mapData;
+	}
+
+
+
+
+
+
+// ********** SEGMENT GENERATION STUFF GOES HERE ************
+
 
 	private static int[][] addSegment(int[][]mapData, int i, int j, int[][]segment){
 		int segmentWidth = segment.length;	
 		int segmentHeight = segment[0].length;
 		for (int h = 0; h < segmentWidth; h++){
 			for (int k = 0; k < segmentHeight; k++){
-				if (mapData[i*(segmentWidth-1) + h][j*(segmentHeight-1) + k] == 0){
+				if (mapData[i*(segmentWidth-1) + h][j*(segmentHeight-1) + k] < segment[h][k]){
 					mapData[i*(segmentWidth-1) + h][j*(segmentHeight-1) + k] = segment[h][k];
 				}
 			}
@@ -548,11 +618,11 @@ Here is a map of the edges these letters correspond to (true = the way is open, 
 		} else {
 			int[][] tempSegment =  
 			{{1,1,0,1,0,0,0},
-			{0,1,0,1,0,1,0}, 
+			{0,0,0,1,0,0,0}, 
 			{0,0,1,1,1,0,0}, 
-			{1,1,0,1,0,0,1}, 
-			{1,0,1,0,1,0,1},
-			{0,1,0,1,0,1,0},
+			{1,0,1,1,0,0,1}, 
+			{1,0,0,0,0,0,1},
+			{0,1,0,0,0,1,0},
 			{1,0,1,1,0,1,0}};
 			return tempSegment;
 		}

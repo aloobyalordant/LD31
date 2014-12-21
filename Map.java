@@ -73,23 +73,24 @@ public class Map{
 */
 		mapData = MapGenerator.generateMap(width, height);
 
-		calculateShortestDistance(mapData);
+		shortestDistance = calculateShortestDistance(mapData);
 	}
+
 
 
 
 
 
 	public void calculateShortestDistance(){
-		calculateShortestDistance(mapData);
+		shortestDistance = calculateShortestDistance(mapData);
 	}
 
-	private void calculateShortestDistance(int[][] mapData){
+	private static double[][][][] calculateShortestDistance(int[][] mapData){
 		int width = mapData.length;
 		int height = mapData[0].length;
 	//	mapWidth = width;
 	//	mapHeight = height;
-		shortestDistance = new double[width][height][width][height]; 
+		double [][][][] tempShortestDistance = new double[width][height][width][height]; 
 	//	System.out.println("Initialising distance data...");
 		// initialise distances - to begin with, everything is infinity from everything except for spaces,
 		//	which are 0 from themselves.
@@ -98,9 +99,9 @@ public class Map{
 				for (int a = 0; a < width; a++){
 					for (int b = 0; b < height; b++){
 						if (x == a && y == b && mapData[x][y] != 1){
-							shortestDistance[x][y][a][b] = 0;
+							tempShortestDistance[x][y][a][b] = 0;
 						} else {
-							shortestDistance[x][y][a][b] = Double.POSITIVE_INFINITY;
+							tempShortestDistance[x][y][a][b] = Double.POSITIVE_INFINITY;
 						}
 					}
 				}
@@ -123,22 +124,22 @@ public class Map{
 						for (int b = 0; b < height; b++){
 							// obstacles are always going to be infinity from everything, so never update these values.
 							if (mapData[x][y] != 1 && mapData[a][b] != 1){
-								double currentDist = shortestDistance[x][y][a][b];
+								double currentDist = tempShortestDistance[x][y][a][b];
 								// now update the distance based on whether any neighbors have a shorter distance than the current distance minus 1
-								if (x > 0 && shortestDistance[x-1][y][a][b] < currentDist -1){
-									shortestDistance[x][y][a][b] = shortestDistance[x-1][y][a][b] + 1;
+								if (x > 0 && tempShortestDistance[x-1][y][a][b] < currentDist -1){
+									tempShortestDistance[x][y][a][b] = tempShortestDistance[x-1][y][a][b] + 1;
 									noChange = false;
 								}
-								if (y > 0 && shortestDistance[x][y-1][a][b] < currentDist -1){
-									shortestDistance[x][y][a][b] = shortestDistance[x][y-1][a][b] + 1;
+								if (y > 0 && tempShortestDistance[x][y-1][a][b] < currentDist -1){
+									tempShortestDistance[x][y][a][b] = tempShortestDistance[x][y-1][a][b] + 1;
 									noChange = false;
 								}
-								if (x < width-1 && shortestDistance[x+1][y][a][b] < currentDist -1){
-									shortestDistance[x][y][a][b] = shortestDistance[x+1][y][a][b] + 1;
+								if (x < width-1 && tempShortestDistance[x+1][y][a][b] < currentDist -1){
+									tempShortestDistance[x][y][a][b] = tempShortestDistance[x+1][y][a][b] + 1;
 									noChange = false;
 								}
-								if (y < height -1 && shortestDistance[x][y+1][a][b] < currentDist -1){
-									shortestDistance[x][y][a][b] = shortestDistance[x][y+1][a][b] + 1;
+								if (y < height -1 && tempShortestDistance[x][y+1][a][b] < currentDist -1){
+									tempShortestDistance[x][y][a][b] = tempShortestDistance[x][y+1][a][b] + 1;
 									noChange = false;
 								}
 							}
@@ -147,9 +148,110 @@ public class Map{
 				}
 			}
 		}
+		return tempShortestDistance;
+//		shortestDistance = tempShortestDistance;
+	}
 
-	//	System.out.println("Distance data done.");
 
+
+
+
+//	public void calculateWallDistance(){
+//		shortestDistance = calculateStDistance(mapData);
+//	}
+
+
+	// like ShortestDistance, but now we are calculating how many wall blocks 
+	// you need to pass through to get from one space to another.
+	// The cost of moving into a wall block is 1.
+	// The cost of moving into an empty space is 0.
+	// Note that this means the graph is slightly assymetric: 
+	// wallDistance[x][y][a][b] may be different to wallDistance[a][b][x][y]
+	// if (a,b) is a wall and (x,y) is not.
+	// SO let us say that wallDistance[x][y] is the number of walls you have to enter to 
+	// go FROM (x,y) TO (a,b)
+	public static double[][][][] calculateWallDistance(int[][] mapData){
+		int width = mapData.length;
+		int height = mapData[0].length;
+	//	mapWidth = width;
+	//	mapHeight = height;
+		double [][][][] tempWallDistance = new double[width][height][width][height]; 
+	//	System.out.println("Initialising distance data...");
+		// initialise distances - to begin with, everything is infinity from everything else,
+		// and 0 from itself.
+		for (int x = 0; x < width; x++){
+			for (int y = 0; y < height; y++){
+				for (int a = 0; a < width; a++){
+					for (int b = 0; b < height; b++){
+						if (x == a && y == b){
+							tempWallDistance[x][y][a][b] = 0;
+						} else {
+							tempWallDistance[x][y][a][b] = Double.POSITIVE_INFINITY;
+						}
+					}
+				}
+			}
+		}
+
+
+		// Now we do a whole bunch of updating the values! Woo.
+		boolean noChange = false;
+		for (int iteration = 0; iteration < width*height && !noChange; iteration++){
+			noChange = true;
+			for (int x = 0; x < width; x++){
+				for (int y = 0; y < height; y++){
+					for (int a = 0; a < width; a++){
+						for (int b = 0; b < height; b++){
+				//			// obstacles are always going to be infinity from everything, so never update these values.
+				//			if (mapData[x][y] != 1 && mapData[a][b] != 1){
+								double currentDist = tempWallDistance[x][y][a][b];
+							// now update the distance based on whether any neighbors have a shorter distane.
+							// if the neighbour is a space, use the neighbour's distance if it's shorter.
+							// if the neighbour is a wall, use the neighbour's distance if that plus 1 is shorter
+							if (x > 0 && tempWallDistance[x-1][y][a][b] < currentDist){
+								if (mapData[x-1][y] == 0){
+									tempWallDistance[x][y][a][b] = tempWallDistance[x-1][y][a][b];
+									noChange = false;
+								} else if (tempWallDistance[x-1][y][a][b] < currentDist-1){
+									tempWallDistance[x][y][a][b] = tempWallDistance[x-1][y][a][b] + 1;
+									noChange = false;
+								}
+							}
+							if (y > 0 && tempWallDistance[x][y-1][a][b] < currentDist){
+								if (mapData[x][y-1] == 0){
+									tempWallDistance[x][y][a][b] = tempWallDistance[x][y-1][a][b];
+									noChange = false;
+								} else if (tempWallDistance[x][y-1][a][b] < currentDist-1){
+									tempWallDistance[x][y][a][b] = tempWallDistance[x][y-1][a][b] + 1;
+									noChange = false;
+								}
+							}
+							if (x < width-1 && tempWallDistance[x+1][y][a][b] < currentDist){
+								if (mapData[x+1][y] == 0){
+									tempWallDistance[x][y][a][b] = tempWallDistance[x+1][y][a][b];
+									noChange = false;
+								} else if (tempWallDistance[x+1][y][a][b] < currentDist-1){
+									tempWallDistance[x][y][a][b] = tempWallDistance[x+1][y][a][b] + 1;
+									noChange = false;
+								}
+							}
+							if (y < height -1 && tempWallDistance[x][y+1][a][b] < currentDist){
+								if (mapData[x][y+1] == 0){
+									tempWallDistance[x][y][a][b] = tempWallDistance[x][y+1][a][b];
+									noChange = false;
+								} else if (tempWallDistance[x][y+1][a][b] < currentDist-1){
+									tempWallDistance[x][y][a][b] = tempWallDistance[x][y+1][a][b] + 1;
+									noChange = false;
+								}
+							}
+						//	}
+						}
+					}
+				}
+			}
+		}
+		return tempWallDistance;
+//		shortestDistance = tempShortestDistance;
 	}
 
 
