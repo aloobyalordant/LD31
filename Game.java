@@ -336,6 +336,8 @@ public class Game extends Applet implements Runnable, KeyListener {
     		       	Image floorTileImage  = ImageIO.read(url);
 			url = new URL(getDocumentBase(), "Wall.png");
   	  		Image wallImage  = ImageIO.read(url);
+			url = new URL(getDocumentBase(), "Wall2.png");
+  	  		Image solidWallImage  = ImageIO.read(url);
 			url = new URL(getDocumentBase(), "Guard2.gif");
 			Image guardImage  = ImageIO.read(url);
 			url = new URL(getDocumentBase(), "Guard3.gif");
@@ -359,6 +361,7 @@ public class Game extends Applet implements Runnable, KeyListener {
 
 			ImageManager.setImage("FloorTile", floorTileImage);
 			ImageManager.setImage("Wall", wallImage);
+			ImageManager.setImage("SolidWall", solidWallImage);
 			ImageManager.setImage("Guard", guardImage);
 			ImageManager.setImage("AlertGuard", alertGuardImage);
 			ImageManager.setImage("Avatar", avatarImage);

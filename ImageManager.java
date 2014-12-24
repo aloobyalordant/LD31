@@ -11,6 +11,7 @@ public class ImageManager{
 	private static ArrayList<Image> imageList;
 	private static Image floorTileImage;
 	private static Image wallImage;
+	private static Image solidWallImage;
 	private static Image guardImage;
 	private static Image alertGuardImage;
 	private static Image avatarImage;
@@ -54,6 +55,8 @@ public class ImageManager{
 			floorTileImage = image;
 		} else if (name.equals("Wall")){
 			wallImage = image;
+		}  else if (name.equals("SolidWall")){
+			solidWallImage = image;
 		} else if (name.equals("Guard")){
 			guardImage = image;
 		} else if (name.equals("AlertGuard")){
@@ -69,7 +72,9 @@ public class ImageManager{
 			return floorTileImage;
 		} else if (name.equals("Wall")){
 			return wallImage;
-		} else if (name.equals("Guard")){
+		}  else if (name.equals("SolidWall")){
+			return solidWallImage;
+		}else if (name.equals("Guard")){
 			return guardImage;
 		} else if (name.equals("AlertGuard")){
 			return alertGuardImage;

@@ -16,6 +16,7 @@ public class World {
 	// avatar
 	private Avatar ava;
 	private ArrayList<Obstacle> obstacles;
+	private ArrayList<Obstacle> solidObstacles;	// walls that can't be destroyed by bullets
 //	private ArrayList<BouncyBall> bonnieBalls;	
 	private ArrayList<Guard> guards;
 	private ArrayList<Bullet> bullets;	
@@ -58,6 +59,7 @@ public class World {
 		levelMap = new Map (Values.mapWidthInBlocks,Values.mapHeightInBlocks);
 		ava = new Avatar(new GridRef(15,9));
 		obstacles = new ArrayList<Obstacle>();
+		solidObstacles = new ArrayList<Obstacle>();
 		guards = new ArrayList<Guard>();
 		bullets = new ArrayList<Bullet>();
 		chargers = new ArrayList<Charger>();
@@ -71,6 +73,8 @@ public class World {
 			for (int j = 0; j < levelMapData[i].length; j++){
 				if (levelMapData[i][j] == 1){
 					obstacles.add(new Obstacle(blockWidth,blockHeight, new Location(i*blockWidth,j*blockHeight)));	
+				} else if (levelMapData[i][j] == 2){
+					solidObstacles.add(new Obstacle(blockWidth,blockHeight, new Location(i*blockWidth,j*blockHeight)));
 				}
 			}
 		}
@@ -144,6 +148,9 @@ public class World {
 		for (MovingObject ob: obstacles){
 			ob.next();
 		}
+		for (MovingObject ob: solidObstacles){
+			ob.next();
+		}
 	//	for (BouncyBall bonnie: bonnieBalls){
 	//		bonnie.next();
 	//	}
@@ -211,6 +218,12 @@ public class World {
 						bill.destroy();
 						loudNoiseGR = ob.getNearestSpace();
 						levelMap.setValue(loudNoiseGR,0);
+					}
+				}
+				for (Obstacle ob: solidObstacles){
+					if (ob.isActive() && checkOverlap(bill, ob)){
+						bill.destroy();
+						loudNoiseGR = ob.getNearestSpace();
 					}
 				}
 			}
@@ -333,6 +346,9 @@ public class World {
 				al.add(ob);
 			}
 		}
+		for (Obstacle ob: solidObstacles){
+			al.add(ob);
+		}
 		al.add(ava);
 	//	for (BouncyBall bonnie: bonnieBalls){
 	//		al.add(bonnie);
@@ -441,6 +457,13 @@ public class World {
 				og.drawImage(temp, l.x, l.y, null);
 			}
 		}		
+
+		temp = ImageManager.getImage("SolidWall");
+		for (Obstacle ob: solidObstacles){
+			Location l = ob.getCurrentLoc();
+			//og.fillRect(l.x,l.y, ob.getWidth(), ob.getHeight());
+			og.drawImage(temp, l.x, l.y, null);
+		}	
 	}
 
 	private void drawMessages() {
@@ -451,7 +474,7 @@ public class World {
 		og.drawString("Treasures: " + chargersGot + "/" + Values.numberOfTreasures, 300, 50);
 		if (BigTreasureCollected){
 			og.drawString("Escape in: " + timeToTeleport, 600, 50);
-		}
+		}		
 	}
 
 

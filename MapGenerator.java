@@ -10,14 +10,6 @@ public class MapGenerator{
 	public static int[][]generateMap(int width, int height){
 
 		int[][]map = new int[5*(segmentWidth-1)+1][3*(segmentHeight-1)+1];
-		for (int i = 0; i < width; i++){
-			map[i][0]=1;
-			map[i][height-1] = 1;
-			for (int j = 0; j <height; j++){
-				map[0][j] = 1;
-				map[width-1][j] = 1;
-			}
-		}
 
 /*
 Here is a map of the edges these letters correspond to (true = the way is open, false = barrier there)
@@ -131,6 +123,23 @@ Here is a map of the edges these letters correspond to (true = the way is open, 
 		map = reduceWallDistance(map,15,9,30-chargerX,chargerY,1);
 		map = reduceWallDistance(map,15,9,chargerX,18-chargerY,1);
 		map = reduceWallDistance(map,15,9,30-chargerX,18-chargerY,1);
+
+
+
+		// draw a bunch of unbreakable walls ( = 2)around the border.
+		for (int i = 0; i < width; i++){
+			map[i][0]=2;
+			map[i][height-1] = 2;
+			for (int j = 0; j <height; j++){
+				map[0][j] = 2;
+				map[width-1][j] = 2;
+			}
+		}
+
+
+
+
+
 
 /*
 		addSegment(map, 0,0,topLeftCornerSegment());
