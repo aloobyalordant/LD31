@@ -18,6 +18,11 @@ public class Guard extends MovingObject{
 	private boolean isDormant = true;
 	private int dormantCooldown = Values.guardDormantCooldown;	// Guards are dormant for a little bit when they first appear, can't interact.
 
+
+	private GridRef previousGR;		// the nearest grid reference to the guard for the previous frame
+	private int footstepSound = 0; 				// int from 0-2. Decides which footstep sound the guard has.
+	private boolean footstep = false;		// whether the avatar is currently making a footstep noise
+
 	private Map personalMap;	// the guard's map of where everything is, which they will update sporadically.
 	private Direction currentDirection;
 	private GridRef prevGridRef;	// where the guard just came from
@@ -32,6 +37,7 @@ public class Guard extends MovingObject{
 		personalMap = new Map(mapData);
 		currentDirection = Direction.UP;
 		ran = new Random();
+		footstepSound = ran.nextInt(2);
 		//int alertVal = ran.nextInt(4);
 		//if (alertVal == 3){
 		//	alert = true;
@@ -54,6 +60,18 @@ public class Guard extends MovingObject{
 	// Process what the object is doing for the next frame.
 	// Returns the newly calculated target location.
 	public Location next(){
+
+		// first, find out where we are now, and if we're making a footstep noise.
+		// (footstep noises happen when the guard moves from one nearest grid reference to a another)
+		GridRef nearestGR = getNearestSpace();
+		if (nearestGR.equals(previousGR)){
+			footstep = false;
+		} else {
+			footstep = true;
+		}
+		// update 'previousGR' value.
+		previousGR = nearestGR;
+
 
 		if (isDormant){
 			dormantCooldown--;
@@ -297,6 +315,14 @@ public class Guard extends MovingObject{
 
 	public boolean isDormant(){
 		return isDormant;
+	}
+
+	public boolean footstep(){
+		return footstep;
+	}
+
+	public int getFootstepSound(){
+		return footstepSound;
 	}
 }
 

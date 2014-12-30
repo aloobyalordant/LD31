@@ -332,8 +332,8 @@ public class Game extends Applet implements Runnable, KeyListener {
 		ImageManager.initialise();
 		try{
 
-    		      	URL url = new URL(getDocumentBase(), "FloorTile.png");
-    		       	Image floorTileImage  = ImageIO.read(url);
+          	URL url = new URL(getDocumentBase(), "FloorTile.png");
+    	   	Image floorTileImage  = ImageIO.read(url);
 			url = new URL(getDocumentBase(), "Wall.png");
   	  		Image wallImage  = ImageIO.read(url);
 			url = new URL(getDocumentBase(), "Wall2.png");

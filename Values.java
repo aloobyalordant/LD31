@@ -2,6 +2,7 @@
 
 public class Values{
 
+	public static final int YOffset = 32;		// How much to offset game elements on the screen (to make room for UI)
 
 	public static final int blockWidth = 32;
 	public static final int blockHeight = 32;
@@ -57,6 +58,10 @@ public class Values{
 	// footstep sound srange now measured in pixels rather than blocks
 	public static final int footstepSoundRange = 96; //3;
 	public static final int footstepSoundRangeSquared = footstepSoundRange*footstepSoundRange;
+	public static final int guardFootstepSoundRange = 192;
+	public static final int guardFootstepSoundRangeSquared = guardFootstepSoundRange*guardFootstepSoundRange;
+	public static final int loudGuardFootstepSoundRange = 288;
+	public static final int loudGuardFootstepSoundRangeSquared = loudGuardFootstepSoundRange*loudGuardFootstepSoundRange;
 	public static final int numberOfTreasures = 5;
 	public static final int teleportDelay = 2000;		// time until the teleport out becomes active after grabbing the treasure.
 	public static final int teleporterWidth = 32;	

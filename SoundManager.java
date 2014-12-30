@@ -29,6 +29,24 @@ public class SoundManager {
 		} 
 	}
 
+
+	public static void queue (String eventDescriptor, int choice) {
+		if (eventDescriptor.equals("GuardFootstep")){
+			switch (choice){
+				case 0:
+					soundFileList.add("Sounds/114590__herbertboland__bigdrum3.wav");
+					break;
+				case 1:
+					soundFileList.add("Sounds/114591__herbertboland__bigdrum4.wav");
+					break;
+				default:
+					soundFileList.add("Sounds/114592__herbertboland__bigdrum5.wav");
+					break;
+				// guard footstep sounds from http://www.freesound.org/people/HerbertBoland/packs/7189/  - Herbet Boland. 
+			}
+		} 
+	}
+
 	public static void refresh() {
 		soundFileList = new ArrayList<String>();
 	}

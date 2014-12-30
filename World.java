@@ -104,37 +104,11 @@ public class World {
 		}
 
 
-
 		chargers.add(new Charger(new GridRef(3,3)));
 		chargers.add(new Charger(new GridRef(27,3)));
 		chargers.add(new Charger(new GridRef(3,15)));
 		chargers.add(new Charger(new GridRef(27,15)));
 		
-		/*
-		obstacles.add(new MovingObject(40,40, new Location(300,100), 0));
-		obstacles.add(new MovingObject(40,40, new Location(320,120), 0));
-		for (int i = 0; i < 20; i++){
-			obstacles.add(new MovingObject(40,40, new Location(i*40,0), 0));
-		}
-		for (int i = 0; i < 20; i++){
-			obstacles.add(new MovingObject(40,40, new Location(i*40,250), 0));
-		}
-		for (int i = 0; i < 20; i++){
-			obstacles.add(new MovingObject(40,40, new Location(i*40,500), 0));
-		}
-		for (int j = 0; j < 20; j++){
-			obstacles.add(new MovingObject(40,40, new Location(0,j*40), 0));
-		}
-		for (int j = 0; j < 20; j++){
-			obstacles.add(new MovingObject(40,40, new Location(500,j*40), 0));
-		}
-		*/
-
-//		bonnieBalls = new ArrayList<BouncyBall>();
-
-//		bonnieBalls.add(new BouncyBall(10,10, new Location(100,100)));
-
-//		CollisionDetector.testRun();
 	}
 
 
@@ -142,6 +116,10 @@ public class World {
 	// In other words, does everything except drawing.
 	public void next( boolean leftPressed, boolean rightPressed, boolean upPressed, boolean downPressed, boolean jumpPressed, boolean actionPressed, boolean restartPressed, boolean killPressed, boolean pausePressed) {
 		frame++;
+
+
+
+		// objec moving / collision detection stuff.
 		if (ava.isAlive()){
 			ava.next(leftPressed, rightPressed, upPressed, downPressed);
 		}
@@ -151,9 +129,6 @@ public class World {
 		for (MovingObject ob: solidObstacles){
 			ob.next();
 		}
-	//	for (BouncyBall bonnie: bonnieBalls){
-	//		bonnie.next();
-	//	}
 		for (Guard gary: guards){
 			gary.next();
 		}
@@ -167,41 +142,68 @@ public class World {
 		doCollisionDetections();
 
 
+		// shooting! Pressing this button makes the avatar fire a bullet and depletes the weapon charge, if 
 		if (killPressed && !killJustPressed && weaponCharge >= Values.weaponDemand){
 			bullets.add(new Bullet(ava.getCurrentCentre(), ava.getDirection()));
 			weaponCharge = weaponCharge - Values.weaponDemand;
 		}
 		killJustPressed = killPressed;
 
-		// now check for fun stuff. Like hitting enemies!
+		// Now check for fun stuff. Like hitting enemies!
+
+
+		// play footstep sounds if the avatar is making them.
+		if (ava.footstep()){
+			SoundManager.queue("AvatarFootstep");
+			
+		}
+
+
+		// Guards doing things!
 		for (Guard gary: guards){
 			if (gary.isAlive()){
+
+
+				// hurt the avatar if the guard hits them.
 				if (checkOverlap(ava, gary) && !gary.isDormant()){
 					ava.hit();
 				}
-				if (ava.footstep()){
-					Location garyLoc = gary.getCurrentCentre();
-					Location avaLoc = ava.getCurrentCentre();
-//					GridRef garyGR = gary.getNearestSpace();
-//					GridRef avaGR = ava.getNearestSpace();
-				//	int xDiff = avaGR.x - garyGR.x;
-				//	int yDiff = avaGR.y - garyGR.y;
 
-					int xDiff = avaLoc.x - garyLoc.x;
-					int yDiff = avaLoc.y - garyLoc.y;
-					int hearingRangeSquared = Values.footstepSoundRangeSquared;
-					if (gary.isAlert()){
-						hearingRangeSquared = Values.alertDetectionRangeSquared;
+				// hearing and making footstep sounds.
+				Location garyLoc = gary.getCurrentCentre();
+				Location avaLoc = ava.getCurrentCentre();
+				int xDiff = avaLoc.x - garyLoc.x;
+				int yDiff = avaLoc.y - garyLoc.y;
+				int hearingRangeSquared = Values.footstepSoundRangeSquared;
+				int guardNoiseRangeSquared = Values.guardFootstepSoundRangeSquared;
+				// distance for both haring and making footstep sounds is increased if the guard is alert i.e. running.
+				if (gary.isAlert()){
+					hearingRangeSquared = Values.alertDetectionRangeSquared;
+					guardNoiseRangeSquared = Values.loudGuardFootstepSoundRangeSquared;
+				}
+
+				// play a boomy footstep sound if the guard is near enough.
+				if (xDiff*xDiff + yDiff*yDiff <= guardNoiseRangeSquared){
+					if(gary.footstep()){
+						SoundManager.queue("GuardFootstep", gary.getFootstepSound());
 					}
+				}
+
+				// guard hear the avatar if they make a noise while close enough.
+				if (ava.footstep()){
 					if (xDiff*xDiff + yDiff*yDiff <= hearingRangeSquared){
 						gary.hearNoise(ava.getNearestSpace());
+
 					}
 				}
 			}
 		}
 
+
+		// bullets hitting things and making noise!
 		GridRef loudNoiseGR = null;
 		for (Bullet bill: bullets){
+			// explode and kill a guard if the bullet hits one.
 			if (bill.isActive()){
 				for (Guard gary: guards){
 					if (gary.isAlive() && checkOverlap(bill, gary)){
@@ -211,6 +213,7 @@ public class World {
 					}
 				}
 			}
+			// explode and destroy a wall if the bullet hits one
 			if (bill.isActive()){
 				for (Obstacle ob: obstacles){
 					if (ob.isActive() && checkOverlap(bill, ob)){
@@ -220,6 +223,7 @@ public class World {
 						levelMap.setValue(loudNoiseGR,0);
 					}
 				}
+				// solid walls don't get destroyed, but it still makes a loud explosion
 				for (Obstacle ob: solidObstacles){
 					if (ob.isActive() && checkOverlap(bill, ob)){
 						bill.destroy();
@@ -228,6 +232,7 @@ public class World {
 				}
 			}
 		}
+		// if the bullet made a loud noise, all the guards hear it (and update their knowledge of the map)
 		if (loudNoiseGR != null){
 			//update the shortest distances on map
 			levelMap.calculateShortestDistance();
@@ -239,7 +244,7 @@ public class World {
 			}
 		}
 
-
+		// picking up chargers depletes the charger and adds to the weapon charge, and we keep track of which chargers have been got so far.
 		for (Charger chaz: chargers){
 			if (chaz.isAvailable() && checkOverlap(ava, chaz)){
 				weaponCharge = weaponCharge + Values.chargeFromChargers;
@@ -250,6 +255,16 @@ public class World {
 			}
 		}
 
+
+
+
+		// release the big charger if the others have all been collected at least once.
+		if(chargersGot >= 4 && !BigTreasureReleased){
+			bigC.release();
+			BigTreasureReleased = true;
+		}
+
+		// if the big treasure is picked up, change to endgame mode, give the weapon a big charge, alert all the guards, and start a big countdown timer for the escape teleport.
 		if (BigTreasureReleased && bigC.isAvailable() && checkOverlap(ava, bigC)){
 			weaponCharge = weaponCharge + Values.weaponDemand;
 			if(!bigC.hasBeenGot()){
@@ -266,18 +281,9 @@ public class World {
 		}
 
 
-		if (ava.footstep()){
-			SoundManager.queue("AvatarFootstep");
-			
-		}
 
-
-
-		if(chargersGot >= 4 && !BigTreasureReleased){
-			bigC.release();
-			BigTreasureReleased = true;
-		}
-
+		// If the big charger has been picked up, it recharges the weapon by a little bit at regular intervals.
+		// The guards are also made aware of the avatar's location at regular intervals.
 		if (BigTreasureCollected && frame % Values.BigTreasureRechargeTime == 0){
 			if (weaponCharge < Values.weaponMaxCharge){	
 				weaponCharge++;
@@ -289,6 +295,7 @@ public class World {
 			}
 		}
 
+		// If the big charger has been picked up, create a new guard in a random spawn location at regular intervals
 		if (BigTreasureCollected && frame % Values.EmergencyGuardReleaseTime == 0 && guards.size() < Values.guardUpperLimit){
 			int choice = ran.nextInt(4);
 			switch(choice){
@@ -307,12 +314,7 @@ public class World {
 			}
 		}
 
-		
-		if(jumpPressed){
-			bigC.release();
-			BigTreasureReleased = true;
-		}
-
+		// summon the telepad if the timer has run out.
 		if (BigTreasureCollected && timeToTeleport > 0){
 			timeToTeleport--;
 			if(timeToTeleport == 0){
@@ -322,14 +324,18 @@ public class World {
 		}
 
 
+		// if the avatar enters the telepad, they teleport away! You win! That's the end of the game.
 		if  (TeleporterOn && checkOverlap(ava, tellie)){
 			tellie.enter();
 			ava.escape();
 		}
+	
+		// cheat button! Pressing this summons the big trasure / charger. CUT THIS BIT OUT		
+		if(jumpPressed){
+			bigC.release();
+			BigTreasureReleased = true;
+		}
 
-//		if(frame % 100 == 0 && frame < 5000){
-//			bonnieBalls.add( new BouncyBall(10,10, new Location(100,100)));
-//		}
 	}
 
 
@@ -350,9 +356,6 @@ public class World {
 			al.add(ob);
 		}
 		al.add(ava);
-	//	for (BouncyBall bonnie: bonnieBalls){
-	//		al.add(bonnie);
-	//	}		
 		for (Guard gary: guards){
 			if (gary.isAlive()){
 				al.add(gary);
@@ -440,7 +443,7 @@ public class World {
 		for (int i=0; i < Values.mapWidthInBlocks; i++){
 			for (int j = 0; j < Values.mapHeightInBlocks; j++){
 				if (mapData[i][j] == 0){
-					og.drawImage(temp, i*blockWidth, j*blockHeight, null);
+					og.drawImage(temp, i*blockWidth, j*blockHeight + Values.YOffset, null);
 				}
 			}
 		}
@@ -454,7 +457,7 @@ public class World {
 			if (ob.isActive()){
 				Location l = ob.getCurrentLoc();
 				//og.fillRect(l.x,l.y, ob.getWidth(), ob.getHeight());
-				og.drawImage(temp, l.x, l.y, null);
+				og.drawImage(temp, l.x, l.y + Values.YOffset, null);
 			}
 		}		
 
@@ -462,18 +465,18 @@ public class World {
 		for (Obstacle ob: solidObstacles){
 			Location l = ob.getCurrentLoc();
 			//og.fillRect(l.x,l.y, ob.getWidth(), ob.getHeight());
-			og.drawImage(temp, l.x, l.y, null);
+			og.drawImage(temp, l.x, l.y + Values.YOffset, null);
 		}	
 	}
 
 	private void drawMessages() {
 		og.setFont(new Font("Courier", Font.BOLD, 32));
 		og.setColor(Color.green);
-		og.drawString("Charge: " + weaponCharge + "/" + Values.weaponDemand, 50, 50);
+		og.drawString("Charge: " + weaponCharge + "/" + Values.weaponDemand, 50, 25);
 		og.setColor(Color.green);
-		og.drawString("Treasures: " + chargersGot + "/" + Values.numberOfTreasures, 300, 50);
+		og.drawString("Treasures: " + chargersGot + "/" + Values.numberOfTreasures, 300, 25);
 		if (BigTreasureCollected){
-			og.drawString("Escape in: " + timeToTeleport, 600, 50);
+			og.drawString("Escape in: " + timeToTeleport, 600, 25);
 		}		
 	}
 
@@ -483,12 +486,12 @@ public class World {
 		for (Charger chaz: chargers){
 			if (chaz.isAvailable()){
 				Location l = chaz.getCurrentLoc();
-				og.fillOval(l.x,l.y, chaz.getWidth(), chaz.getHeight());
+				og.fillOval(l.x,l.y + Values.YOffset, chaz.getWidth(), chaz.getHeight());
 			}
 		}
 		if (BigTreasureReleased && bigC.isAvailable()){
 			Location l = bigC.getCurrentLoc();
-			og.fillOval(l.x,l.y, bigC.getWidth(), bigC.getHeight());
+			og.fillOval(l.x,l.y + Values.YOffset, bigC.getWidth(), bigC.getHeight());
 		}		
 	}
 
@@ -496,7 +499,7 @@ public class World {
 		if (TeleporterOn && ! tellie.hasBeenEntered()){
 			og.setColor(Color.cyan);
 			Location l = tellie.getCurrentLoc();
-			og.fillOval(l.x,l.y, tellie.getWidth(), tellie.getHeight());
+			og.fillOval(l.x,l.y + Values.YOffset, tellie.getWidth(), tellie.getHeight());
 		}		
 	}
 
@@ -507,7 +510,7 @@ public class World {
 			if (gary.isAlive()){
 				Location l = gary.getCurrentLoc();
 			//	og.fillRect(l.x,l.y, gary.getWidth(), gary.getHeight()); 
-				og.drawImage(temp, l.x, l.y, null);
+				og.drawImage(temp, l.x, l.y + Values.YOffset, null);
 			}
 		}
 	}
@@ -517,7 +520,7 @@ public class World {
 		for (Bullet bill: bullets){
 			if (bill.isActive()){
 				Location l = bill.getCurrentLoc();
-				og.fillRect(l.x,l.y, bill.getWidth(), bill.getHeight()); 
+				og.fillRect(l.x,l.y + Values.YOffset, bill.getWidth(), bill.getHeight()); 
 			}
 		}
 	}
@@ -531,7 +534,7 @@ public class World {
 
 			og.setColor(Color.blue);
 		//	og.fillRect(l.x,l.y, ava.getWidth(), ava.getHeight());
-			og.drawImage(temp, l.x, l.y - Values.AvatarImageYOffset, null);
+			og.drawImage(temp, l.x, l.y - Values.AvatarImageYOffset + Values.YOffset, null);
 		}
 	}
 
@@ -540,9 +543,9 @@ public class World {
 		int radius = BigTreasureCollected ? Values.superPoweredTorchRadius: Values.torchRadius;
 		float[] dist={Values.torchBrightestRadius,1f};
 		Color[] colors={new Color(0,0,0,0), Color.black};
-		RadialGradientPaint rgp = new RadialGradientPaint(l.x,l.y, radius, dist, colors);
+		RadialGradientPaint rgp = new RadialGradientPaint(l.x,l.y + Values.YOffset, radius, dist, colors);
 		og.setPaint(rgp);
-		og.fillRect(0, 0, d.width, d.height);
+		og.fillRect(0, 0 + Values.YOffset, d.width, d.height);
 	}
 
 
@@ -553,17 +556,10 @@ public class World {
 			if (gary.isAlive() && gary.isAlert()){
 				Location l = gary.getCurrentLoc();
 			//	og.fillRect(l.x,l.y, gary.getWidth(), gary.getHeight()); 
-				og.drawImage(temp, l.x, l.y, null);
+				og.drawImage(temp, l.x, l.y + Values.YOffset, null);
 			}
 		}
 	}
-
-
-
-
-
-
-
 
 
 }
