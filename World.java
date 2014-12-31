@@ -32,6 +32,8 @@ public class World {
 	private boolean BigTreasureReleased = false;
 	private boolean BigTreasureCollected = false;
 	private boolean TeleporterOn = false;
+	private boolean AvatarEscaped = false;
+	private boolean GameOver = false;
 	
 	private int timeToTeleport = 0;
 
@@ -143,7 +145,7 @@ public class World {
 
 
 		// shooting! Pressing this button makes the avatar fire a bullet and depletes the weapon charge, if 
-		if (killPressed && !killJustPressed && weaponCharge >= Values.weaponDemand){
+		if (killPressed && !killJustPressed && weaponCharge >= Values.weaponDemand && ava.isAlive()){
 			bullets.add(new Bullet(ava.getCurrentCentre(), ava.getDirection()));
 			weaponCharge = weaponCharge - Values.weaponDemand;
 		}
@@ -153,9 +155,8 @@ public class World {
 
 
 		// play footstep sounds if the avatar is making them.
-		if (ava.footstep()){
+		if (ava.footstep() && ava.isAlive()){
 			SoundManager.queue("AvatarFootstep");
-			
 		}
 
 
@@ -165,8 +166,10 @@ public class World {
 
 
 				// hurt the avatar if the guard hits them.
-				if (checkOverlap(ava, gary) && !gary.isDormant()){
+				if (checkOverlap(ava, gary) && !gary.isDormant() && ava.isAlive()){
 					ava.hit();
+					// hurting the avatar kills them for now, so it's game over!
+					GameOver = true;
 				}
 
 				// hearing and making footstep sounds.
@@ -328,6 +331,7 @@ public class World {
 		if  (TeleporterOn && checkOverlap(ava, tellie)){
 			tellie.enter();
 			ava.escape();
+			AvatarEscaped = true;
 		}
 	
 		// cheat button! Pressing this summons the big trasure / charger. CUT THIS BIT OUT		
@@ -475,8 +479,17 @@ public class World {
 		og.drawString("Charge: " + weaponCharge + "/" + Values.weaponDemand, 50, 25);
 		og.setColor(Color.green);
 		og.drawString("Treasures: " + chargersGot + "/" + Values.numberOfTreasures, 300, 25);
-		if (BigTreasureCollected){
-			og.drawString("Escape in: " + timeToTeleport, 600, 25);
+
+
+		// Draw a bunch of status messages, depending on what game state we're in.
+		if (GameOver){
+			og.drawString("PRESS " + Controls.RESTART_STRING + " TO RESTART.", 600, 25);
+		} else if (AvatarEscaped){
+			og.drawString("MISSION ACCOMPLISHED!", 600, 25);
+		} else if (TeleporterOn){
+			og.drawString("GET TO THE TELEPAD!", 600, 25);
+		} else if (BigTreasureCollected){
+			og.drawString("ESCAPE IN: " + timeToTeleport, 600, 25);
 		}		
 	}
 
