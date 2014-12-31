@@ -28,7 +28,7 @@ public class SoundManager {
 			}
 		} else if (eventDescriptor.equals("Explosion")){
 			soundFileList.add("Sounds/244345__willlewis__musket-explosion.wav");
-			// footstep sounds from http://www.freesound.org/people/Willlewis/sounds/244345/  - Will Lewis
+			// explosion sound from http://www.freesound.org/people/Willlewis/sounds/244345/  - Will Lewis
 
 		} 
 	}

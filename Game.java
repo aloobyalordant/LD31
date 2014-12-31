@@ -343,7 +343,9 @@ public class Game extends Applet implements Runnable, KeyListener {
 			url = new URL(getDocumentBase(), "Guard3.gif");
 			Image alertGuardImage  = ImageIO.read(url);
 			url = new URL(getDocumentBase(), "Explorer2(17x20).gif");
-             		Image avatarImage  = ImageIO.read(url);
+            Image avatarImage  = ImageIO.read(url);
+	
+
 
 
 //			ImageManager.setImage("FloorTile", ImageIO.read(this.getClass().getResource("/FloorTile.png")));
@@ -365,6 +367,13 @@ public class Game extends Applet implements Runnable, KeyListener {
 			ImageManager.setImage("Guard", guardImage);
 			ImageManager.setImage("AlertGuard", alertGuardImage);
 			ImageManager.setImage("Avatar", avatarImage);
+
+
+			for (int i = 0; i < 9; i++){
+				url = new URL(getDocumentBase(), "Art/battery" + i + ".png");
+             	Image batteryImage  = ImageIO.read(url);
+				ImageManager.setImage("Battery", batteryImage, i);	
+			}
 		} catch (IOException e) {
 		}
 

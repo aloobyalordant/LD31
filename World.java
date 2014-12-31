@@ -478,8 +478,21 @@ public class World {
 	private void drawMessages() {
 		og.setFont(new Font("Courier", Font.BOLD, 32));
 		og.setColor(Color.green);
-		og.drawString("Charge: " + weaponCharge + "/" + Values.weaponDemand, 50, 25);
-		og.setColor(Color.green);
+	//	og.drawString("Charge: " + weaponCharge + "/" + Values.weaponDemand, 50, 25);
+		og.drawString("Charge: ", 50, 25);
+
+		Image temp;
+		for (int box = 1; box <= 3; box++){
+			if (weaponCharge <= (box-1)*8){
+				temp = ImageManager.getImage("Battery", 0);
+			} else if (weaponCharge >= box*8){
+				temp = ImageManager.getImage("Battery", 8);
+			} else {				
+				temp = ImageManager.getImage("Battery", weaponCharge - ((box-1)*8));
+			}
+			og.drawImage(temp, 158 + (box*24), 2, null);
+		}
+
 		og.drawString("Treasures: " + chargersGot + "/" + Values.numberOfTreasures, 300, 25);
 
 

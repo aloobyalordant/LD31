@@ -16,6 +16,8 @@ public class ImageManager{
 	private static Image alertGuardImage;
 	private static Image avatarImage;
 
+	private static  Image[] batteryImages = new Image[9];
+
 	public ImageManager(){
 		
 	}
@@ -67,6 +69,13 @@ public class ImageManager{
 
 	}
 
+	public static void setImage(String name, Image image, int i){
+		if (name.equals("Battery")){
+			batteryImages[i] = image;
+		}
+
+	}
+
 	public static Image getImage(String name){
 		if (name.equals("FloorTile")){
 			return floorTileImage;
@@ -81,6 +90,14 @@ public class ImageManager{
 		} else if (name.equals("Avatar")){
 			return avatarImage;
 		}else{
+			return null;
+		}
+	}
+
+	public static Image getImage(String name, int val){
+		if (name.equals("Battery")){
+			return batteryImages[val];
+		} else {
 			return null;
 		}
 	}
