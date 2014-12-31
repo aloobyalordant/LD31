@@ -98,7 +98,7 @@ public class Map{
 			for (int y = 0; y < height; y++){
 				for (int a = 0; a < width; a++){
 					for (int b = 0; b < height; b++){
-						if (x == a && y == b && mapData[x][y] != 1){
+						if (x == a && y == b && mapData[x][y] == 0){
 							tempShortestDistance[x][y][a][b] = 0;
 						} else {
 							tempShortestDistance[x][y][a][b] = Double.POSITIVE_INFINITY;
@@ -123,7 +123,7 @@ public class Map{
 					for (int a = 0; a < width; a++){
 						for (int b = 0; b < height; b++){
 							// obstacles are always going to be infinity from everything, so never update these values.
-							if (mapData[x][y] != 1 && mapData[a][b] != 1){
+							if (mapData[x][y] == 0 && mapData[a][b] == 0){
 								double currentDist = tempShortestDistance[x][y][a][b];
 								// now update the distance based on whether any neighbors have a shorter distance than the current distance minus 1
 								if (x > 0 && tempShortestDistance[x-1][y][a][b] < currentDist -1){
@@ -244,7 +244,6 @@ public class Map{
 									noChange = false;
 								}
 							}
-						//	}
 						}
 					}
 				}

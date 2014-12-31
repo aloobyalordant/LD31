@@ -109,8 +109,7 @@ public class World {
 		chargers.add(new Charger(new GridRef(3,3)));
 		chargers.add(new Charger(new GridRef(27,3)));
 		chargers.add(new Charger(new GridRef(3,15)));
-		chargers.add(new Charger(new GridRef(27,15)));
-		
+		chargers.add(new Charger(new GridRef(27,15)));	
 	}
 
 
@@ -491,6 +490,22 @@ public class World {
 		} else if (BigTreasureCollected){
 			og.drawString("ESCAPE IN: " + timeToTeleport, 600, 25);
 		}		
+
+
+/*		// debug code for fixing distance calculation issues - shows the distance of every block from the centre. X represents infinity.
+		double[][][][] distances = levelMap.getShortestDistanceData();
+		for (int i = 0; i< Values.mapWidthInBlocks; i++){
+			for (int j = 0; j < Values.mapHeightInBlocks; j++){
+				double val = distances[i][j][15][9];
+				if (val == Double.POSITIVE_INFINITY){		
+					og.drawString("X", i*Values.blockWidth, j*Values.blockHeight + 64);
+				} else {
+				int intval = (int) Math.round(val);
+					og.drawString("" + intval, i*Values.blockWidth, j*Values.blockHeight + 64);
+				}
+			}
+		}
+*/
 	}
 
 
