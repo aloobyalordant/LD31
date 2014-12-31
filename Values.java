@@ -42,8 +42,8 @@ public class Values{
 	public static final int bigChargerHeight = 16;
 	//weapon
 	public static final int weaponDemand = 8;
-	public static final int weaponInitialCharge = 8;
-	public static final int weaponMaxCharge = 12;
+	public static final int weaponInitialCharge = 12;
+	public static final int weaponMaxCharge = 24;
 	public static final int BigTreasureRechargeTime = 50;
 
 	public static final int EmergencyGuardReleaseTime = 300;

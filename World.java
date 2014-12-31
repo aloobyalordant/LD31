@@ -246,8 +246,8 @@ public class World {
 
 		// picking up chargers depletes the charger and adds to the weapon charge, and we keep track of which chargers have been got so far.
 		for (Charger chaz: chargers){
-			if (chaz.isAvailable() && checkOverlap(ava, chaz)){
-				weaponCharge = weaponCharge + Values.chargeFromChargers;
+			if (chaz.isAvailable() && checkOverlap(ava, chaz) && weaponCharge < Values.weaponMaxCharge){
+				weaponCharge = Math.min(weaponCharge + Values.chargeFromChargers, Values.weaponMaxCharge);
 				if(!chaz.hasBeenGot()){
 					chargersGot++;
 				}
