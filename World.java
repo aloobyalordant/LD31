@@ -212,6 +212,7 @@ public class World {
 						gary.hit();
 						bill.destroy();
 						loudNoiseGR = gary.getNearestSpace();
+						SoundManager.queue("Explosion");
 					}
 				}
 			}
@@ -223,6 +224,7 @@ public class World {
 						bill.destroy();
 						loudNoiseGR = ob.getNearestSpace();
 						levelMap.setValue(loudNoiseGR,0);
+						SoundManager.queue("Explosion");
 					}
 				}
 				// solid walls don't get destroyed, but it still makes a loud explosion
@@ -230,6 +232,7 @@ public class World {
 					if (ob.isActive() && checkOverlap(bill, ob)){
 						bill.destroy();
 						loudNoiseGR = ob.getNearestSpace();
+						SoundManager.queue("Explosion");
 					}
 				}
 			}
@@ -435,7 +438,7 @@ public class World {
 	}
 
 	private void drawBackground(Dimension d) {
-		og.setColor(Color.gray);
+		og.setColor(Color.black);
 		og.fillRect(0, 0, d.width, d.height);
 		
 		Image temp = ImageManager.getImage("FloorTile");

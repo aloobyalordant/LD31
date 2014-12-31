@@ -26,6 +26,10 @@ public class SoundManager {
 					break;
 				// footstep sounds from http://www.freesound.org/people/OwlStorm/packs/9344/  - Natalie Kirk / Esper Studio. 
 			}
+		} else if (eventDescriptor.equals("Explosion")){
+			soundFileList.add("Sounds/244345__willlewis__musket-explosion.wav");
+			// footstep sounds from http://www.freesound.org/people/Willlewis/sounds/244345/  - Will Lewis
+
 		} 
 	}
 
