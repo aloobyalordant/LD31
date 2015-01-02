@@ -46,7 +46,7 @@ public class Values{
 	public static final int weaponMaxCharge = 24;
 	public static final int BigTreasureRechargeTime = 50;
 
-	public static final int EmergencyGuardReleaseTime = 100;
+	public static final int EmergencyGuardReleaseTime = 200;
 
 	// torch?
 	public static final int torchRadius = 130;
