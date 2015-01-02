@@ -337,10 +337,10 @@ public class World {
 		}
 	
 		// cheat button! Pressing this summons the big trasure / charger. CUT THIS BIT OUT		
-		if(jumpPressed){
-			bigC.release();
-			BigTreasureReleased = true;
-		}
+		//if(jumpPressed){
+		//	bigC.release();
+		//	BigTreasureReleased = true;
+		//}
 
 	}
 
