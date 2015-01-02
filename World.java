@@ -137,7 +137,7 @@ public class World {
 			bill.next();
 		}
 		for (Charger chaz: chargers){
-			chaz.next();
+			chaz.next(weaponCharge <= Values.weaponDemand);		//chargers only refuel if you are low on ammo.
 		}	
 
 		doCollisionDetections();

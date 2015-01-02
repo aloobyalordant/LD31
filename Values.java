@@ -36,17 +36,17 @@ public class Values{
 	// chargers
 	public static final int chargerWidth = 8;
 	public static final int chargerHeight = 8;
-	public static final int chargerCooldown = 1000;
+	public static final int chargerCooldown = 400;
 	public static final int chargeFromChargers = 4;
 	public static final int bigChargerWidth = 16;
 	public static final int bigChargerHeight = 16;
 	//weapon
 	public static final int weaponDemand = 8;
-	public static final int weaponInitialCharge = 12;
+	public static final int weaponInitialCharge = 16;
 	public static final int weaponMaxCharge = 24;
 	public static final int BigTreasureRechargeTime = 50;
 
-	public static final int EmergencyGuardReleaseTime = 300;
+	public static final int EmergencyGuardReleaseTime = 100;
 
 	// torch?
 	public static final int torchRadius = 130;

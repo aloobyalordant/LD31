@@ -19,8 +19,8 @@ public class Charger extends MovingObject{
 
 	}
 
-	public Location next(){
-		if (cooldown > 0){
+	public Location next(boolean avatarInNeed){
+		if (avatarInNeed && cooldown > 0){
 			cooldown--;
 		}
 		if (cooldown == 0){

@@ -119,9 +119,10 @@ Here is a map of the edges these letters correspond to (true = the way is open, 
 			chargerY = 15;
 		}
 		// make sure avatar has wall distance 1 to any charger (hmmmm, might want to change this later...)
-		map = reduceWallDistance(map,15,9,chargerX,chargerY,1);
-		map = reduceWallDistance(map,15,9,30-chargerX,chargerY,1);
-		map = reduceWallDistance(map,15,9,chargerX,18-chargerY,1);
+		// actually, make it so avatr has wall distance at most 0 to at least 3 chargers
+		map = reduceWallDistance(map,15,9,chargerX,chargerY,0);
+		map = reduceWallDistance(map,15,9,30-chargerX,chargerY,0);
+		map = reduceWallDistance(map,15,9,chargerX,18-chargerY,0);
 		map = reduceWallDistance(map,15,9,30-chargerX,18-chargerY,1);
 
 
