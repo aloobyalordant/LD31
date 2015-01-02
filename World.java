@@ -574,7 +574,7 @@ public class World {
 	private void drawAvatar() {
 		if (ava.isAlive()){
 			Location l = ava.getCurrentLoc();
-			Image temp = ImageManager.getImage("Avatar");
+			Image temp = ImageManager.getImage("Avatar", ava.getDirection());
 
 			og.setColor(Color.blue);
 		//	og.fillRect(l.x,l.y, ava.getWidth(), ava.getHeight());

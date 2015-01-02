@@ -14,7 +14,11 @@ public class ImageManager{
 	private static Image solidWallImage;
 	private static Image guardImage;
 	private static Image alertGuardImage;
-	private static Image avatarImage;
+//	private static Image avatarImage;
+	private static Image avatarDownImage;
+	private static Image avatarUpImage;
+	private static Image avatarLeftImage;
+	private static Image avatarRightImage;
 
 	private static  Image[] batteryImages = new Image[9];
 
@@ -63,8 +67,28 @@ public class ImageManager{
 			guardImage = image;
 		} else if (name.equals("AlertGuard")){
 			alertGuardImage = image;
-		} else if (name.equals("Avatar")){
-			avatarImage = image;
+		} //else if (name.equals("Avatar")){
+			//avatarImage = image;
+		//}
+
+	}
+
+	public static void setImage(String name, Direction dir, Image image){
+		if (name.equals("Avatar")){
+			switch(dir){
+				case DOWN:
+					avatarDownImage = image;
+					break;
+				case UP:
+					avatarUpImage = image;
+					break;
+				case LEFT:
+					avatarLeftImage = image;
+					break;
+				default:
+					avatarRightImage = image;
+					break;
+			}
 		}
 
 	}
@@ -73,7 +97,6 @@ public class ImageManager{
 		if (name.equals("Battery")){
 			batteryImages[i] = image;
 		}
-
 	}
 
 	public static Image getImage(String name){
@@ -87,8 +110,8 @@ public class ImageManager{
 			return guardImage;
 		} else if (name.equals("AlertGuard")){
 			return alertGuardImage;
-		} else if (name.equals("Avatar")){
-			return avatarImage;
+	//	} else if (name.equals("Avatar")){
+	//		return avatarImage;
 		}else{
 			return null;
 		}
@@ -101,5 +124,27 @@ public class ImageManager{
 			return null;
 		}
 	}
+
+	public static Image getImage(String name, Direction dir){
+		if (name.equals("Avatar")){
+			switch(dir){
+				case DOWN:
+					return avatarDownImage;
+				//	break;
+				case UP:
+					return avatarUpImage;
+				//	break;
+				case LEFT:
+					return avatarLeftImage;
+				//	break;
+				default:
+					return avatarRightImage;
+				//	break;
+			}
+		} else {
+			return null;
+		}
+	}
+
 
 }

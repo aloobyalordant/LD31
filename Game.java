@@ -342,9 +342,16 @@ public class Game extends Applet implements Runnable, KeyListener {
 			Image guardImage  = ImageIO.read(url);
 			url = new URL(getDocumentBase(), "Guard3.gif");
 			Image alertGuardImage  = ImageIO.read(url);
-			url = new URL(getDocumentBase(), "Explorer2(17x20).gif");
-            Image avatarImage  = ImageIO.read(url);
-	
+//			url = new URL(getDocumentBase(), "Explorer2(17x20).gif");
+//          Image avatarImage  = ImageIO.read(url);
+			url = new URL(getDocumentBase(), "Art/ExplorerDown.gif");
+            Image avatarDownImage  = ImageIO.read(url);
+			url = new URL(getDocumentBase(), "Art/ExplorerUp.gif");
+            Image avatarUpImage  = ImageIO.read(url);
+			url = new URL(getDocumentBase(), "Art/ExplorerLeft.gif");
+            Image avatarLeftImage  = ImageIO.read(url);
+			url = new URL(getDocumentBase(), "Art/ExplorerRight.gif");
+            Image avatarRightImage  = ImageIO.read(url);
 
 
 
@@ -366,7 +373,11 @@ public class Game extends Applet implements Runnable, KeyListener {
 			ImageManager.setImage("SolidWall", solidWallImage);
 			ImageManager.setImage("Guard", guardImage);
 			ImageManager.setImage("AlertGuard", alertGuardImage);
-			ImageManager.setImage("Avatar", avatarImage);
+		//	ImageManager.setImage("Avatar", avatarImage);
+			ImageManager.setImage("Avatar", Direction.DOWN, avatarDownImage);
+			ImageManager.setImage("Avatar", Direction.UP, avatarUpImage);
+			ImageManager.setImage("Avatar", Direction.LEFT, avatarLeftImage);
+			ImageManager.setImage("Avatar", Direction.RIGHT, avatarRightImage);
 
 
 			for (int i = 0; i < 9; i++){

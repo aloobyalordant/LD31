@@ -13,7 +13,7 @@ public class Values{
 	public static final int avatarWidth = 17; //20;
 	public static final int avatarHeight = 20; //20;
 	public static final int avatarSpeed = 5;
-	public static final int AvatarImageYOffset = 4;
+	public static final int AvatarImageYOffset = 1;
 	// guard stuff
 	public static final int guardWidth = 24;
 	public static final int guardHeight = 24;
