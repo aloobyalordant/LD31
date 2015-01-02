@@ -283,6 +283,7 @@ public class World {
 				}
 			}
 			timeToTeleport = Values.teleportDelay;
+			SoundManager.queue("Gong");
 		}
 
 

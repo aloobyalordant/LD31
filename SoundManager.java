@@ -40,6 +40,9 @@ public class SoundManager {
 			soundFileList.add("Sounds/244345__willlewis__musket-explosion.wav");
 			// explosion sound from http://www.freesound.org/people/Willlewis/sounds/244345/  - Will Lewis
 
+		} else if (eventDescriptor.equals("Gong")){
+			soundFileList.add("Sounds/122681__juskiddink__gong-3.wav");
+			// gong sound from http://www.freesound.org/people/juskiddink/sounds/122681/ - juskiddink
 		} 
 	}
 
